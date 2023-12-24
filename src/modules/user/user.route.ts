@@ -1,6 +1,6 @@
 import { Router } from "express";
 import UserController from "./user.controller";
-import { emailVerificationLimit } from "../../config/core/services/emailVerificationLimit";
+import { verificationRequestLimit } from "../../config/core/services/verificationRequestLimit";
 
 export default class UserRoutes {
 	private router = Router();
@@ -14,7 +14,7 @@ export default class UserRoutes {
 		//Email Verification
 		this.router.post(
 			"/users/verify-email",
-			emailVerificationLimit,
+			verificationRequestLimit,
 			this.userController.verifyEmailAddress
 		);
 
@@ -23,5 +23,8 @@ export default class UserRoutes {
 
 		//user signin
 		this.router.post('/users/signin', this.userController.loginUser);
+
+		//forget-password
+		this.router.put('/forget-password', verificationRequestLimit, this.userController.forgetPassword);
 	}
 }

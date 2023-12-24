@@ -123,4 +123,38 @@ export default class UserController {
 			});
 		}
 	};
+
+	public async forgetPassword(req: Request, res: Response) {
+		const email = req.body.email
+		const user = await User.findOne({ email }, { __v: 0, updatedAt: 0, createdAt: 0 });
+		if (!user) {
+			return res.status(404).send({
+				message: "User doesn't exist",
+			});
+		} else {
+			const token = tokenForVerify(user);
+			const mailOptions = {
+				from: process.env.SENDER_EMAIL,
+				to: `${email}`,
+				subject: 'Password Reset',
+				html: `<h2>Hello ${user.name.toUpperCase()}</h2>
+			<p>A request has been received to change the password for your <strong>Shodai</strong> account </p>
+
+			  <p>This link will expire in <strong> 15 minutes</strong>.</p>
+
+			  <p style="margin-bottom:20px;">Click this link to reset password</p>
+	  
+			  <a href=${process.env.FRONTEND_BASE_URL}/user/forget-password/${token} style="background:#22c55e;color:white;border:1px solid #22c55e; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Reset Password</a>
+	  
+			  <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@shodai.com</p>
+	  
+			  <p style="margin-bottom:0px;">Thank you</p>
+			  <strong>Shodai Team</strong>
+				   `,
+			};
+
+			const message = 'A passwork reset link has been sent to your email !!!';
+			sendEmail(mailOptions, res, message);
+		}
+	};
 }
