@@ -13,12 +13,12 @@ export default class UserRoutes {
 	private initRoutes(): void {
 		//Email Verification
 		this.router.post(
-			"/verify-email",
+			"/users/verify-email",
 			emailVerificationLimit,
 			this.userController.verifyEmailAddress
 		);
 
 		// User Registration
-		this.router.post("/register/:token", this.userController.registerUser);
+		this.router.post("/users/register/:token", this.userController.registerUser);
 	}
 }

@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
+import CryptoJS from "crypto-js";
 import User from "./user.model";
 
 import {
@@ -11,6 +12,7 @@ import {
 export default class UserController {
 	public async verifyEmailAddress(req: Request, res: Response) {
 		const email = req.body.email;
+		const name = req.body.name;
 		const isEmailExist = await User.findOne({ email });
 		if (isEmailExist) {
 			return res.status(403).send({
@@ -21,24 +23,24 @@ export default class UserController {
 			const token = tokenForVerify(user);
 			const mailOptions = {
 				from: {
-					name: "Amana Big Bazar",
+					name: "Shodai",
 					address: process.env.SENDER_EMAIL,
 				},
 				to: `${email}`,
 				subject: "Verify Your Email",
-				html: `<h2>Hello ${email}</h2>
-            <p>Verify your email address to complete the signup and login into your <strong>AmanaBigBazar</strong> account.</p>
+				html: `<h2>Hello ${name}</h2>
+            <p>Verify your email address to complete the signup and login into your <strong>SHODAI</strong> account.</p>
       
               <p>This link will expire in <strong> 15 minute</strong>.</p>
       
               <p style="margin-bottom:20px;">Click this link for active your account</p>
       
-              <a href=${process.env.STORE_URL}/user/email-verification/${token} style="background:#22c55e;color:white;border:1px solid #22c55e; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Verify Account</a>
+              <a href=${process.env.FRONTEND_BASE_URL}/user/email-verification/${token} style="background:#22c55e;color:white;border:1px solid #22c55e; padding: 10px 15px; border-radius: 4px; text-decoration:none;">Verify Account</a>
       
-              <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@abb.com</p>
+              <p style="margin-top: 35px;">If you did not initiate this request, please contact us immediately at support@shodai.com</p>
       
               <p style="margin-bottom:0px;">Thank you</p>
-              <strong>Amana Big Bazar Team</strong>
+              <strong>Shodai Team</strong>
                    `,
 			};
 
