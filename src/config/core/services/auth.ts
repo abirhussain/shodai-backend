@@ -10,7 +10,7 @@ export const tokenForVerify = (user: User) => {
 			email: user.email,
 			password: user.password,
 		},
-		process.env.JWT_SECRET_FOR_EMAIL_VERIFICATION || "",
+		process.env.JWT_SECRET_FOR_VERIFICATION || "",
 		{ expiresIn: "15m" }
 	);
 };
