@@ -7,7 +7,7 @@ import appRoutes from "./config/routes/routes";
 dotenv.config();
 
 const app = new App({
-	port: process.env.PORT || 5000,
+	port: process.env.PORT || 8000,
 	middlewares: [
 		express.json(),
 		express.urlencoded({ extended: false }),
