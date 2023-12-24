@@ -20,5 +20,8 @@ export default class UserRoutes {
 
 		// User Registration
 		this.router.post("/users/register/:token", this.userController.registerUser);
+
+		//user signin
+		this.router.post('/users/signin', this.userController.loginUser);
 	}
 }

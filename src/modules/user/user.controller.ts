@@ -77,10 +77,7 @@ export default class UserController {
 						const newUser = new User({
 							name,
 							email,
-							password: CryptoJS.AES.encrypt(
-								password,
-								process.env.CRYPTO_SECRET || ""
-							).toString(),
+							password
 						});
 						newUser.save();
 						const token = signInToken(newUser);
@@ -96,4 +93,34 @@ export default class UserController {
 			);
 		}
 	}
+
+	public async loginUser(req: Request, res: Response) {
+		try {
+			const email = req.body.email;
+			const password = req.body.password;
+			const user = await User.findOne({ email }, { __v: 0, updatedAt: 0, createdAt: 0 });
+
+			if (user) {
+				const decryptedPassword = CryptoJS.AES.decrypt(user.password, process.env.CRYPTO_SECRET || "");
+				if (decryptedPassword.toString(CryptoJS.enc.Utf8) !== password) {
+					res.status(401).send({ message: "Invalid Credentials" });
+				} else {
+					const token = signInToken(user);
+					res.send({
+						token,
+						_id: user._id,
+						name: user.name,
+						email: user.email,
+						address: user.address,
+						phone: user.phone,
+						image: user.image,
+					});
+				}
+			}
+		} catch (err: any) {
+			res.status(500).send({
+				message: err.message,
+			});
+		}
+	};
 }
