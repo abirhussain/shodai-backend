@@ -190,7 +190,7 @@ export default class UserController {
             );
             if (user) {
               user.password = newPassword;
-              user.save();
+              await user.save();
               res.status(200).send({
                 message: "Password has been changed successfully !!!",
               });
