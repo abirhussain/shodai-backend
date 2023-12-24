@@ -67,7 +67,7 @@ export default class UserController {
 		if (token) {
 			jwt.verify(
 				token,
-				process.env.JWT_SECRET_FOR_EMAIL_VERIFICATION || "",
+				process.env.JWT_SECRET_FOR_VERIFICATION || "",
 				(err: any, decoded: any) => {
 					if (err) {
 						return res.status(401).send({
@@ -155,6 +155,40 @@ export default class UserController {
 
 			const message = 'A passwork reset link has been sent to your email !!!';
 			sendEmail(mailOptions, res, message);
+		}
+	};
+
+	public async resetPassword(req: Request, res: Response) {
+		const token = req.body.token;
+		const newPassword = req.body.password;
+		if (token) {
+			jwt.verify(token, process.env.JWT_SECRET_FOR_VERIFICATION || "", async (err: any, decoded: any) => {
+				if (err) {
+					return res.status(401).send({
+						message: 'Token expired, please try again !!!',
+					});
+				} else {
+					const decodedToken: any = jwt.decode(token);
+					const { email } = decodedToken;
+					const user = await User.findOne({ email }, { __v: 0, updatedAt: 0, createdAt: 0 });
+					if (user) {
+						user.password = newPassword;
+						user.save();
+						res.status(200).send({
+							message: 'Password has been changed successfully !!!',
+						});
+					} else {
+						return res.status(404).send({
+							message: "User doesn't exist",
+						});
+					}
+
+				}
+			});
+		} else {
+			res.status(401).send({
+				message: "Token is missing !!!"
+			})
 		}
 	};
 }

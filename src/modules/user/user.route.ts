@@ -26,5 +26,8 @@ export default class UserRoutes {
 
 		//forget-password
 		this.router.put('/forget-password', verificationRequestLimit, this.userController.forgetPassword);
+
+		// Reset Password
+		this.router.put('/reset-password', this.userController.resetPassword);
 	}
 }
