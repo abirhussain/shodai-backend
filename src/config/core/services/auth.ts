@@ -2,6 +2,7 @@ import nodemailer from "nodemailer";
 import jwt from "jsonwebtoken";
 import User from "../interfaces/user";
 import { Response } from "express";
+import { EmailOptions } from "../interfaces/emailOptions.interface";
 
 export const tokenForVerify = (user: User) => {
 	return jwt.sign(
@@ -15,7 +16,7 @@ export const tokenForVerify = (user: User) => {
 	);
 };
 
-export const sendEmail = async (mailOptions: any, res: Response, message: string) => {
+export const sendEmail = async (mailOptions: EmailOptions, res: Response, message: string) => {
 	const transporter = nodemailer.createTransport({
 		host: process.env.HOST,
 		service: process.env.SERVICE, //comment this line if you use custom server/domain
